@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block style %}
+
+<script>
+     $(document).ready(function() { 
+        $('#menu_home').addClass('active');
+     });
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid padding-up menu">
+        <div class="btn btn-mybtn btn-lg" id="UsersPane" onclick="loadui('{{ url_for('admin.get_users') }}')">Users</div>
+        <div class="btn btn-mybtn btn-lg" id="RolesPane" onclick="loadui('{{ url_for('admin.get_user_roles') }}')">UserRoles</div>
+        <div class="btn btn-mybtn btn-lg" id="vCenterPane" onclick="loadui('{{ url_for('vmware.get_vcenters') }}')">vCenter</div>
+        <!-- <div class="btn btn-mybtn btn-lg" onclick="loadui('/admin/creds')">Credentials</div>
+        <div class="btn btn-mybtn btn-lg" id="UsersPane" onclick="loadui('/admin/site')">Site Settings</div> -->
+    </div>
+
+    <div class="container-fluid panel" id="jsPane">
+        
+    </div>
+
+<script>
+    function loadui(url){
+        $('#jsPane').html('<div class="spinner container-fluid text-center"><a class="loader spinner-border spinner-border-lg" role="status" aria-hidden="true"></a>  Fetching Data ....</div>');
+        $('#jsPane').load(url, function(response, status,xhr){
+            if (status == "error") {
+                // Handle the error
+                $("#jsPane").html("<center><h2>Error loading content from server. Status: " + xhr.status+"</h2></center>");
+            }
+        });
+    }
+</script>
+{% endblock %}

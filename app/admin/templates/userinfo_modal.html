@@ -1,0 +1,136 @@
+<div class="modal fade" id="userdetails" tabindex="-1" aria-labelledby="userdetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="userdetailsModalLabel">User Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid heading">
+                <a id="user">{{user.name}} {{user.surname}}</a>		
+            </div>
+            <div class="container row">
+                <div class="form-group col-lg-6">
+                    <label class="lable" for="username">Username :</label>
+                  <input type="text" class="form-control" id="username" value="{{user.username}}" disabled>
+                </div>
+
+                <div class="form-group col-lg-6">
+                    <label class="lable" for="email">Email ID :</label>
+                  <input type="text" class="form-control" id="email" value="{{user.email}}" disabled> 
+                </div>
+                
+                <div class="form-group col-lg-6">
+                    <label class="lable" for="login_method">Team:</label>
+                  <input type="text" class="form-control" id="team" value="{{user.team}}" disabled> 
+                </div>
+                
+                <div class="form-group col-lg-3">
+                    <label class="lable" for="contact">Contact:</label>
+                  <input type="text" class="form-control" id="contact" value="{{user.contact}}" disabled> 
+                </div>
+                
+                <div class="form-group col-lg-3">
+                    <label class="lable" for="team">Admin:</label>
+                  <input type="text" class="form-control" id="admin" value="{{user.is_admin}}" disabled> 
+                </div>
+            </div>
+
+            <div class="container form-group padding-up">
+                <label class="lable" for="roles">Roles:</label>
+
+                <label class="lable float-right" for="roles"><a class="text-theme-link-notice" onclick="addrole('/admin/get_user/{{user.username}}')">Add Role</a></label>
+
+                <div class="row">
+                    <div class="form-group col-lg-6">
+                        <label class="label" for="roles"></label>
+                        <select id="roles" class="selectpicker form-control" multiple>
+                        {% for role in roles %}
+                          {% if role not in user.roles%}
+                          <option value="{{role}}">{{role}}</option>
+                          {% endif %}		    		  
+                        {% endfor %}
+                        </select>
+                    </div>		    	
+                </div>
+
+                <table id="rolesTable" class="display table table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Role</th>
+                            <th>Description</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for roles in user.roles %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>{{roles.name}}</td>
+                            <td>{{roles.description}}</td>
+                            <td>
+                                <a class="text-theme-link-notice" onclick="removerole('{{user.username}}','{{roles.name}}')">x Remove</a>
+                            </td>
+                        </tr>
+    
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary text-center" id="addpreperty" data-dismiss="modal">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <script type="text/javascript">
+    $('#userdetails').modal('show');
+  
+    function addrole(url){
+        var selectedvalues = $('#roles').val();
+        var jData = JSON.stringify(selectedvalues);
+            $.ajax({
+              type: "POST",
+              url: url,
+              contentType: 'application/json',
+              data: jData,
+              success: function(data){
+                  for(var i=0; i<selectedvalues.length;i++)
+                  {
+                      $('#roles option[value="'+selectedvalues[i]+'"]').remove();	
+                  }
+                  $('#userdetails').modal('hide');
+                  renderModal(url)
+              },
+              error: function(jqXHR, exception) {
+                  alert("Bad Request");    
+              }
+          });
+      }
+  
+      function removerole(username, role){
+          var url = "/admin/get_user/" + username;
+            $.ajax({
+              type: "DELETE",
+              url: url,
+              contentType: 'application/json',
+              data: JSON.stringify({"name" : role}),
+              success: function(data){
+                  $('#userdetails').modal('hide');
+                  renderModal(url)
+              },
+              error: function(jqXHR, exception) {
+                  alert("Bad Request");    
+              }
+          });
+      }
+  
+  
+  </script>
+  

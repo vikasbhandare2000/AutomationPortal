@@ -1,0 +1,164 @@
+<div class="container-fluid"></div>
+    <div class="heading">vCenter's</div>
+</div>
+<div class="container-fluid">
+    <div class="container">
+        <div class="btn btn-mybtn" data-bs-toggle="modal" data-bs-target="#vcenterModal">
+            Add New
+        </div>
+    </div>
+
+    <div class="container">
+        <table id="vcenter" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>URL</th>
+                    <th>Site</th>
+                    <th>Description</th>
+                    <th>#</th>
+                    <th>#</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for v in data %}
+                <tr>
+                    <td>{{loop.index}}</td>
+                    <td>{{v.name}}</td>
+                    <td>{{v.url}}</td>
+                    <td>{{v.site}}</td>
+                    <td>{{v.description}}</td>
+                    <td><i class="text-theme-link-notice fas fa-edit" onclick="editvcdetails('{{v.id}}')"></i></td>
+                    <td><a class="text-theme-link-notice fa fa-trash" onclick="removevc('{{v.id}}')"></a></td>
+                </tr>
+              {% endfor %}   
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="vcenterModal" tabindex="-1" aria-labelledby="vcenterModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="vcenterModalLabel">New vCenter Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row">
+            <div class="col-6 mb-3">
+                <label for="name" class="col-form-label">Name : </label>
+                <input type="text" class="form-control" id="name" required>
+              </div>
+              <div class="col-6 mb-3">
+                <label for="site" class="col-form-label">Site : </label>
+                <input type="text" class="form-control" id="site" required>
+              </div>
+          </div>
+          <div class="mb-3">
+            <label for="url" class="col-form-label">URL : </label>
+            <input type="text" class="form-control" id="url" required>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="col-form-label">Description : </label>
+            <input type="text" class="form-control" id="description">
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+                <label for="username" class="col-form-label">Username :</label>
+                <input type="text" class="form-control" id="username" required>
+              </div>
+              <div class="col-6 mb-3">
+                <label for="password" class="col-form-label">Password :</label>
+                <input type="password" class="form-control" id="password" required>
+              </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="addvc">submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    $('#addvc').click(function(){
+
+        var dts = {
+            "name" : $('#name').val(),
+            "site" : $('#site').val(),
+            "description" : $('#description').val(),
+            "url" : $('#url').val(),
+            "credentials" : { 
+                "username" : $('#username').val(), 
+                "password" : $('#password').val()
+            }
+        }
+
+        
+        $.ajax({
+			type: "POST",
+            url: "{{url_for('vmware.get_vcenters')}}",
+            contentType: 'application/json',
+            data: JSON.stringify(dts),            
+            success: function(data){    
+                infobox(0,data['message']);  
+                $("#vcenterModal").modal('toggle');
+                $('#vCenterPane').click(); 
+            },
+            error: function(jqXHR, exception) {
+            alertbox(jqXHR.status,JSON.parse(jqXHR.responseText).message);
+	        }
+       });
+
+
+
+    });
+    $('.menu .btn').css('text-decoration','none');
+    $('#vCenterPane').css('text-decoration','underline');
+
+    function editvcdetails(vc){
+      $.ajax({
+            type: "GET",
+            url: "/vmware/v1/api/vcenter/"+vc,
+            contentType: 'application/json',            
+            success: function(data){    
+                $("#name").val(data["name"]);
+                $("#site").val(data["site"]);
+                $("#url").val(data["url"]);
+                $("#description").val(data["description"]);
+                $("#username").val(data["username"]);
+                $("#vcenterModalLabel").html("Edit vCenter Details");
+                $("#vcenterModal").modal('toggle');              
+            },
+            error: function(jqXHR, exception) {
+              alertbox(jqXHR.status,JSON.parse(jqXHR.responseText).message);
+            }
+        });
+    }
+
+
+    function removevc(vc){
+      $.ajax({
+            type: "DELETE",
+            url: "/vmware/v1/api/vcenter/"+vc,
+            contentType: 'application/json',            
+            success: function(data){    
+              infobox(0,data['message']);     
+              $('#vCenterPane').click();          
+            },
+            error: function(jqXHR, exception) {
+            alertbox(jqXHR.status,JSON.parse(jqXHR.responseText).message);
+            }
+        });
+    }
+
+
+</script>

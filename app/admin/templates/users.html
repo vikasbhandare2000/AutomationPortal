@@ -1,0 +1,65 @@
+<div class="container-fluid"></div>
+    <div class="heading">User's List</div>
+</div>
+<div class="container-fluid">
+
+    <div class="container">
+        <table id="UsersTbl" class="table table-striped" style="width:100%">
+            <thead>
+			    <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Team</th>
+                    <th scope="col">Admin</th>
+                    <th scope="col">Contact No.</th>
+                    <th scope="col">Enable User</th>
+                  </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+              <tr>
+                <td scope="row">{{loop.index}}</td>
+                <td><a class="text-theme-link-notice" onclick="renderModal('/admin/get_user/{{row.username}}')">{{row.name}} {{row.surname}}</a></td>
+                <td>{{row.username}}</td>
+                <td>{{row.email}}</td>
+                <td>{{row.team}}</td>
+                <td>{% if row.is_admin%}ADMIN{% else %}User{% endif %}</td>
+                <td>{{row.contact}}</td>
+                <td><input type="checkbox" class="enableUser" name="{{row.username}}" value="{{row.username}}" {% if row.is_enabled %}checked{% endif %}></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="requestContet">
+	
+</div>
+
+<script type="text/javascript">
+	function renderModal(url) {
+		$('#requestContet').load(url);		
+	}
+    $('.menu .btn').css('text-decoration','none');
+	$('#UsersPane').css('text-decoration','underline');
+
+
+    $('.enableUser').change(function(){
+        $.ajax({
+			type: "POST",
+            url: "/admin/enable_user",
+            contentType: 'application/json',
+            data: JSON.stringify({"username" : $(this).val(), "state": $(this).is(':checked')}),            
+            success: function(data){       
+                alert(data['message']);
+            },
+            error: function(jqXHR, exception) {
+                alert(JSON.parse(jqXHR.responseText).message);
+	        }
+       });        
+    });
+
+</script>

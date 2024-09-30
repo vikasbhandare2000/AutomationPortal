@@ -1,0 +1,59 @@
+<div class="container-fluid"></div>
+    <div class="heading">Role's List</div>
+</div>
+<div class="container-fluid">
+    <div class="container">
+        <table id="RolesTbl" class="table table-striped" style="width:100%">
+            <thead>
+			    <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Role Name</th>
+                    <th scope="col">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+              <tr>
+                <th scope="row">{{loop.index}}</th>
+                <td>{{row.name}}</td>
+                <td>{{row.description}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="modal fade" id="addNewRole" tabindex="-1" aria-labelledby="addNewRoleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addNewRoleModalLabel">New Role</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="url" class="col-form-label">Name : </label>
+              <input type="text" class="form-control" id="role" placeholder="Enter Role Name" required>
+            </div>
+            <div class="mb-3">
+              <label for="description" class="col-form-label">Description : </label>
+              <input type="text" class="form-control" id="description" placeholder="Enter Role description" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary text-center" id="addpreperty" data-dismiss="modal">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="text/javascript">
+	/** DataTable API **/
+    $('.menu .btn').css('text-decoration','none');
+    $('#RolesPane').css('text-decoration','underline');
+
+</script>

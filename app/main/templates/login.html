@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="/static/admin/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/admin/css/custom.css" rel="stylesheet">
+  <title>{{name}}</title>
+  <style>
+    .register{
+      padding-top: 12px;
+    }
+
+    .register a strong{
+      cursor: pointer;
+    }
+    .form-group{
+      padding-top: 10px;
+    }
+    label{
+      padding: 2px;
+    }
+    .match { color: green; }
+    .no-match { color: red; }
+  </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="/static/admin/js/custom.js"></script>
+</head>
+<body class="bg-indigo">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-indigo">
+    <div class="container-fluid justify-content-center">
+      <a class="navbar-brand" href="#" style="padding: 20px"><h1>{{g.name}}</h1></a>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 mt-5">
+                    <div class="card-body bg-indigo">
+                        <form method="POST"  action="{{ url_for('main.login') }}">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required value="root">
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required value="H0tD0g55!">
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                            <div class="register flex-row" style="color: white;">
+                              <a style="color: white !important; text-decoration: none;" id="reset">Forgot Password?  <strong>Reset</strong></a>
+                              <a class="float-end" style="color: white !important; text-decoration: none;" id="register">Don't have an account? <strong>Sign up</strong></a>
+                            </div>
+                        </form>
+
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            <ul style="list-style: none; padding-top: 10px; padding-left: 0px; color: #ff05ea; font-size: 18px;">
+                            {% for category, message in messages %}
+                                <li class="{{ category }}" style="text-align: center;">{{ message }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+            </div>
+        </div>
+        <h1 class="text-center text-danger">{{msg}}</h1>
+    </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Register</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="container row">
+                    <div class="form-group col-lg-6">
+                        <label class="lable" for="name">First Name :</label>
+                        <input type="text" class="form-control" id="name" placeholder="First Name" required>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label class="lable" for="surname">Last Username :</label>
+                        <input type="text" class="form-control" id="surname" placeholder="Last Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="lable" for="username2">Username :</label>
+                        <input type="text" class="form-control" id="username2" placeholder="Username" required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label class="lable" for="email">Email ID :</label>
+                        <input type="text" class="form-control" id="email" placeholder="Email-ID" required> 
+                    </div>
+    
+                    <div class="form-group">
+                        <label class="lable" for="password2">Password :</label>
+                        <input type="password" class="form-control" id="password2" placeholder="Enter password" required> 
+                    </div>
+    
+                    <div class="form-group">
+                        <label class="lable" for="confirm_password">Re-Enter Password:</label>
+                        <input type="password" class="form-control" id="confirm_password" placeholder="Re-Enter Password" required> 
+                    </div>
+    
+                    <div class="form-group" id="password_feedback"></div>
+    
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="registerbtn" class="btn btn-primary" style="background: var(--primary-color);" disabled>Register</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="alertbox" tabindex="-1" aria-labelledby="takesnapshotLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3 class="modal-title w-100" id="alertboxLabel">Alert</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group text-center row padding-up">
+                  <div class="col-md-12">
+                      <h2><label id="alert_status_code"></label></h2>
+                  </div>
+                  <div class="col-md-12">
+                    <h3><label id="alert_message"></label></h3>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+  <!-- Bootstrap JS and Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    $('#register').on('click',function(){
+        $('#exampleModal').modal('show');
+    });
+
+    $('#registerbtn').on('click', function(){
+      console.log('register................');
+      var dts = {
+        "name"     : $('#name').val(),
+        "surname"  : $('#surname').val(),
+        "username" : $('#username2').val(),
+        "password" : $('#password2').val(),
+        "email"    : $('#email').val()
+      }
+
+      $.ajax({
+          type: "POST",
+          url: "{{url_for('main.register')}}",
+          contentType: 'application/json',
+          data: JSON.stringify(dts),
+          success: function(data){
+              $('#userdetails').modal('hide');
+              $('#exampleModal').modal('toggle');
+              infobox(0,data['message']);  
+          },
+          error: function(jqXHR, exception) {
+            $('#exampleModal').modal('toggle');
+              alertbox(jqXHR.status,JSON.parse(jqXHR.responseText).message);   
+          }
+      });
+
+    });
+
+    $(document).ready(function() {
+            $('#confirm_password').on('keyup', function() {
+                const password = $('#password2').val();
+                const confirmPassword = $('#confirm_password').val();
+
+                if (password === confirmPassword) {
+                    $('#password_feedback').text('Passwords match!').removeClass('no-match').addClass('match');
+                    $('#registerbtn').prop('disabled', false);
+
+                } else {
+                    $('#password_feedback').text('Passwords do not match!').removeClass('match').addClass('no-match');
+                    $('#registerbtn').prop('disabled', true);
+                }
+            });
+        });
+  </script>
+
+</body>
+</html>

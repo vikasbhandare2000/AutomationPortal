@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block style %}
+
+<script>
+     $(document).ready(function() { 
+        $('#menu_workflows').addClass('active');
+     });
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid padding-up">
+    <div class="btn btn-mybtn btn-lg" onclick="loadui(this,'{{ url_for('vmware.snapshot') }}')"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span> Snapshot
+    </div>
+</div>
+
+<div class="container-fluid panel" id="jsPane">
+    
+</div>
+
+<script>
+   function loadui(btn, url) {
+    // Save the original button text
+    var btnText = $(btn).contents().filter(function() {
+        return this.nodeType === 3; // Only text nodes
+    }).text().trim();
+
+    // Show the spinner and change button text
+    $(btn).find('.spinner-border').show();
+    $(btn).contents().filter(function() {
+        return this.nodeType === 3; // Only text nodes
+    }).replaceWith(' '+btnText);
+
+    // Load the content into #jsPane
+    $('#jsPane').load(url, function() {
+        // On success, hide the spinner and restore button text
+        $(btn).find('.spinner-border').hide();
+        $(btn).contents().filter(function() {
+            return this.nodeType === 3; // Only text nodes
+        }).replaceWith(' ' + btnText);
+    });
+}
+
+</script>
+
+{% endblock %}
